@@ -36,19 +36,21 @@
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-spacing: 2px;
 }
 
 th,
 td {
   text-align: center;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 th {
   font-weight: bold;
 }
+
+
 
 td:not(.empty) {
   cursor: pointer;

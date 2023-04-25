@@ -8,7 +8,7 @@ const Calendar = () => {
     const [year] = useState(new Date().getFullYear());
 
     const months = Array.from({ length: 12 }, (v, i) => i);
-    const weeks = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+    const weeks = [ "Пн", "Вт", "Ср", "Чт", "Пт", "Сб","Вс"];
 
 
     useEffect(() => {
@@ -30,31 +30,46 @@ const Month = ({ year, month, weeks, mouseDown, setMouseDown, setSelectedArr }) 
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const daysInMonth = lastDayOfMonth.getDate();
-    const startOffset = firstDayOfMonth.getDay();
+    const startOffset = firstDayOfMonth.getDay() - 1;
     const endOffset = 6 - lastDayOfMonth.getDay();
 
-    const days = Array.from(
-        { length: daysInMonth },
-        (v, i) => i + 1
-    ).map((day) => new Date(year, month, day));
+    const days = Array.from({ length: daysInMonth }, (v, i) => i + 1).map(
+        (day) => new Date(year, month, day)
+    );
 
-    const emptyDaysBefore = Array.from({ length: startOffset }, (v, i) => (
-        <td key={`before-${i}`} className="empty">
-            &nbsp;
-        </td>
-    ));
+    const emptyDaysBefore = Array.from(
+        { length: startOffset < 0 ? 6 : startOffset },
+        (v, i) => (
+            <td key={`before-${i}`} className="empty">
+                &nbsp;
+            </td>
+        )
+    );
 
-    const emptyDaysAfter = Array.from({ length: endOffset }, (v, i) => (
-        <td key={`after-${i}`} className="empty">
-            &nbsp;
-        </td>
-    ));
+    const emptyDaysAfter = Array.from(
+        { length: endOffset < 0 ? 0 : endOffset },
+        (v, i) => (
+            <td key={`after-${i}`} className="empty">
+                &nbsp;
+            </td>
+        )
+    );
 
-    const cells = [
-        ...emptyDaysBefore,
-        ...days.map((day) => <Day setSelectedArr={setSelectedArr} setMouseDown={setMouseDown} mouseDown={mouseDown} key={day.getTime()} day={day} />),
-        ...emptyDaysAfter,
-    ];
+    let cells = []
+
+    if(emptyDaysAfter.length >= 6) {
+       cells = [
+            ...emptyDaysBefore,
+            ...days.map((day) => <Day setSelectedArr={setSelectedArr} setMouseDown={setMouseDown} mouseDown={mouseDown} key={day.getTime()} day={day} />),
+        ];
+    }else {
+     cells = [
+            ...emptyDaysBefore,
+            ...days.map((day) => <Day setSelectedArr={setSelectedArr} setMouseDown={setMouseDown} mouseDown={mouseDown} key={day.getTime()} day={day} />),
+            ...emptyDaysAfter,
+        ];
+    }
+
 
     return (
         <div className="month">
